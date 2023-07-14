@@ -1,11 +1,12 @@
 import React from 'react';
 import { Form, Button } from 'react-bootstrap';
+import axios from 'axios';
 
 class LogIn extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: '',
+      name: '',
       password: ''
     };
   }
@@ -18,8 +19,15 @@ class LogIn extends React.Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
-    // Aquí puedes manejar la lógica de inicio de sesión 
-    // (como enviar una solicitud HTTP a tu API de inicio de sesión)
+    axios.post('http://localhost:3001/login', this.state)
+      .then(response => {
+        console.log(response);
+        // Aquí puedes manejar la respuesta del servidor
+      })
+      .catch(error => {
+        console.error(error);
+        // Aquí puedes manejar los errores
+      });
   }
 
   render() {
@@ -27,7 +35,7 @@ class LogIn extends React.Component {
       <Form onSubmit={this.handleSubmit}>
         <Form.Group>
           <Form.Label>name:</Form.Label>
-          <Form.Control type="text" name="username" onChange={this.handleInputChange} />
+          <Form.Control type="text" name="name" onChange={this.handleInputChange} />
         </Form.Group>
         <Form.Group>
           <Form.Label>Password:</Form.Label>

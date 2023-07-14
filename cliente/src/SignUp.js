@@ -1,13 +1,15 @@
 import React from 'react';
 import { Form, Button } from 'react-bootstrap';
+import axios from 'axios';
 
 class SignUp extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       name: '',
-      email: '',
-      password: ''
+      password: '',
+      confirmPassword:'',
+      passwordError: false
     };
   }
 
@@ -19,8 +21,26 @@ class SignUp extends React.Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
-    // Aquí puedes manejar la lógica de registro 
-    // (como enviar una solicitud HTTP a tu API de registro)
+    if (this.state.password !== this.state.confirmPassword) {
+      this.setState({ passwordError: true });
+      return;
+    }
+    this.setState({ passwordError: false });
+
+    const user = {
+      username: this.state.name,
+      password: this.state.password
+    };
+
+    axios.post('http://localhost:3001/signup', user)
+      .then(response => {
+        console.log('Signup successful');
+        // Aquí puedes manejar la respuesta del servidor
+      })
+      .catch(error => {
+        console.error(error);
+        // Aquí puedes manejar los errores
+      });
   }
 
   render() {
@@ -36,7 +56,8 @@ class SignUp extends React.Component {
         </Form.Group>
         <Form.Group>
           <Form.Label>Confirm Password:</Form.Label>
-          <Form.Control type="password" name="ConfirmPassword" onChange={this.handleInputChange} />
+          <Form.Control type="password" name="confirmPassword" onChange={this.handleInputChange} />
+          {this.state.passwordError && <p style={{ color: 'red' }}>Passwords do not match.</p>}
         </Form.Group>
         <div className="d-flex mt-3 justify-content-center btn-custom">
           <Button type="submit" className="btn-sm">
