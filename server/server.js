@@ -17,7 +17,7 @@ router.post('/signup', async (req, res, next) => {
       res.status(409).send('Username already exists!');
     } else {
       await registerUser(req.body.username, req.body.password);
-      res.status(200).send('User registered successfully!');
+      res.status(200).send({username:req.body.username});
     }
   } catch (error) {
     next(error);
@@ -26,8 +26,10 @@ router.post('/signup', async (req, res, next) => {
 
 router.post('/login', async (req, res, next) => {
   try {
+
     const user = await authenticateUser(req.body.username, req.body.password);
-    res.status(200).send('User authenticated successfully!'); // o enviar algún dato útil para tu aplicación
+    res.status(user.status).send({username:user.usermsg.username});
+  
   } catch (error) {
     next(error); // se asegura de que los errores se manejen adecuadamente
   }

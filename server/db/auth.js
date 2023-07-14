@@ -17,27 +17,30 @@ async function findUser(username) {
   });
 }
 
-// En tu archivo de autenticación en la base de datos
 async function authenticateUser(username, password) {
   const db = connectToDatabase();
   try {
-    const user = await findUser(username);
-    if (!user) {
-      throw new Error('No such user found');
+    const usermsg = await findUser(username);
+    //No such user found
+    if (!usermsg) {
+      return { status: 460, usermsg:'no such username'};
     }
-    const match = await bcrypt.compare(password, user.password);
+    const match = await bcrypt.compare(password, usermsg.password);
+    // Wrong password
     if (!match) {
-      throw new Error('Wrong password');
+      return { status: 461, usermsg:'wrong password'};
     }
-    return user; // o devolver algo útil para tu aplicación, quizás un objeto del usuario, token, etc.
+
+    delete usermsg.password;
+
+    return { status: 200, usermsg:usermsg}; // o devolver algo útil para tu aplicación, quizás un objeto del usuario, token, etc.
   } catch (error) {
     console.error(error);
-    throw error; // asegúrate de manejar este error en tu endpoint
+    return { status: 500, usermsg: 'Server error' };
   } finally {
     db.close();
   }
 }
-
 
 
 async function registerUser(username, password) {

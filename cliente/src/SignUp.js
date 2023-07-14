@@ -36,7 +36,7 @@ class SignUp extends React.Component {
 
     axios.post('http://localhost:3001/signup', user)
       .then(response => {
-        console.log('Signup successful');
+        console.log(response);
         // Aquí puedes manejar la respuesta del servidor
       })
       .catch(error => {
