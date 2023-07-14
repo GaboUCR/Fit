@@ -6,7 +6,7 @@ class LogIn extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: '',
+      username: '',
       password: ''
     };
   }
@@ -35,7 +35,7 @@ class LogIn extends React.Component {
       <Form onSubmit={this.handleSubmit}>
         <Form.Group>
           <Form.Label>name:</Form.Label>
-          <Form.Control type="text" name="name" onChange={this.handleInputChange} />
+          <Form.Control type="text" name="username" onChange={this.handleInputChange} />
         </Form.Group>
         <Form.Group>
           <Form.Label>Password:</Form.Label>
