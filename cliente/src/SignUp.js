@@ -1,4 +1,5 @@
 import React from 'react';
+import { Form, Button } from 'react-bootstrap';
 
 class SignUp extends React.Component {
   constructor(props) {
@@ -24,21 +25,25 @@ class SignUp extends React.Component {
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
-        <label>
-          Name:
-          <input type="text" name="name" onChange={this.handleInputChange} />
-        </label>
-        <label>
-          Email:
-          <input type="email" name="email" onChange={this.handleInputChange} />
-        </label>
-        <label>
-          Password:
-          <input type="password" name="password" onChange={this.handleInputChange} />
-        </label>
-        <input type="submit" value="Sign Up" />
-      </form>
+      <Form onSubmit={this.handleSubmit}>
+        <Form.Group>
+          <Form.Label>Name:</Form.Label>
+          <Form.Control type="text" name="name" onChange={this.handleInputChange} />
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Email:</Form.Label>
+          <Form.Control type="email" name="email" onChange={this.handleInputChange} />
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Password:</Form.Label>
+          <Form.Control type="password" name="password" onChange={this.handleInputChange} />
+        </Form.Group>
+        <div className="d-flex mt-3 justify-content-center btn-custom">
+          <Button type="submit" className="btn-sm">
+            Sign Up
+          </Button>
+        </div>
+      </Form>
     );
   }
 }

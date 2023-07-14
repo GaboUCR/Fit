@@ -13,6 +13,12 @@
   }
 }
 
+.btn-custom {
+  padding: 10px 20px;  /* ajusta estos valores a tu gusto */
+  width: 100%; /* esto hará que todos los botones tengan el mismo ancho */
+}
+
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
