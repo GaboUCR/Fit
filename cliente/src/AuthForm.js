@@ -25,7 +25,7 @@ class AuthForm extends React.Component {
     return (
       <Container className="auth-container justify-content-center">
         <Row className="justify-content-center">
-          <Col xs={12} md={8}>
+          <Col xs={16} md={12}>
             {this.state.isLogIn ? <LogIn /> : <SignUp />}
             <Button className="mt-3 btn-sm btn-custom" variant="primary" onClick={this.toggleForm}>
               Switch to {this.state.isLogIn ? 'Sign Up' : 'Log In'}

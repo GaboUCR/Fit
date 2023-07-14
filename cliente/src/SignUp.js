@@ -31,12 +31,12 @@ class SignUp extends React.Component {
           <Form.Control type="text" name="name" onChange={this.handleInputChange} />
         </Form.Group>
         <Form.Group>
-          <Form.Label>Email:</Form.Label>
-          <Form.Control type="email" name="email" onChange={this.handleInputChange} />
-        </Form.Group>
-        <Form.Group>
           <Form.Label>Password:</Form.Label>
           <Form.Control type="password" name="password" onChange={this.handleInputChange} />
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Confirm Password:</Form.Label>
+          <Form.Control type="password" name="ConfirmPassword" onChange={this.handleInputChange} />
         </Form.Group>
         <div className="d-flex mt-3 justify-content-center btn-custom">
           <Button type="submit" className="btn-sm">

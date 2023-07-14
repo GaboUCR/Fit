@@ -26,8 +26,8 @@ class LogIn extends React.Component {
     return (
       <Form onSubmit={this.handleSubmit}>
         <Form.Group>
-          <Form.Label>Email:</Form.Label>
-          <Form.Control type="email" name="email" onChange={this.handleInputChange} />
+          <Form.Label>name:</Form.Label>
+          <Form.Control type="text" name="username" onChange={this.handleInputChange} />
         </Form.Group>
         <Form.Group>
           <Form.Label>Password:</Form.Label>
