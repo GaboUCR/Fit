@@ -9,7 +9,8 @@ class SignUp extends React.Component {
       name: '',
       password: '',
       confirmPassword:'',
-      passwordError: false
+      passwordError: false,
+      usernameExists:false
     };
   }
 
@@ -23,6 +24,7 @@ class SignUp extends React.Component {
     event.preventDefault();
     if (this.state.password !== this.state.confirmPassword) {
       this.setState({ passwordError: true });
+      this.setState({ usernameExists: false });
       return;
     }
     this.setState({ passwordError: false });
@@ -38,8 +40,15 @@ class SignUp extends React.Component {
         // Aquí puedes manejar la respuesta del servidor
       })
       .catch(error => {
-        console.error(error);
-        // Aquí puedes manejar los errores
+        if (error.response && error.response.status === 409) {
+          this.setState({ passwordError: false });
+          this.setState({ usernameExists: true });
+          return;
+          //alert(error.response.data); // Muestra el mensaje de error al usuario
+        } else {
+          console.error(error);
+          // Aquí puedes manejar los demás errores
+        }
       });
   }
 
@@ -58,6 +67,7 @@ class SignUp extends React.Component {
           <Form.Label>Confirm Password:</Form.Label>
           <Form.Control type="password" name="confirmPassword" onChange={this.handleInputChange} />
           {this.state.passwordError && <p style={{ color: 'red' }}>Passwords do not match.</p>}
+          {this.state.usernameExists && <p style={{ color: 'red' }}>Username already in use</p>}
         </Form.Group>
         <div className="d-flex mt-3 justify-content-center btn-custom">
           <Button type="submit" className="btn-sm">
