@@ -1,3 +1,5 @@
+const connectToDatabase = require("./db");
+
 async function getExercisesForUser(username) {
     const db = connectToDatabase();
     return new Promise((resolve, reject) => {

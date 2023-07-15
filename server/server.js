@@ -26,7 +26,7 @@ function authenticateToken(req, res, next) {
   });
 }
 
-router.get('/user/:username', authenticateToken, async (req, res, next) => {
+router.get('/user/:username', async (req, res, next) => {
   try {
     const exercises = await getExercisesForUser(req.params.username);
     res.status(200).send(exercises);
