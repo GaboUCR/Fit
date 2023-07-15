@@ -24,6 +24,8 @@ class LogIn extends React.Component {
       .then(response => {
         if (response.status === 200) {
           console.log(response);
+          localStorage.setItem('token', response.token); //Se guarda el JWT en localstorage
+
           // Aquí puedes manejar la respuesta del servidor cuando la autenticación es exitosa
         }
         
