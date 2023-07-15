@@ -27,7 +27,7 @@ function connectToDatabase() {
               id INTEGER PRIMARY KEY,
               name TEXT NOT NULL,
               amount INTEGER NOT NULL,
-              unit TEXT,
+              unit TEXT,          
               date TEXT NOT NULL,
               userId INTEGER,
               FOREIGN KEY(userId) REFERENCES Users(id)

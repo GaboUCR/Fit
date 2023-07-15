@@ -6,7 +6,7 @@ import UserExercises from './UserExercises';
 function App() {
   return (
     // <AuthForm />
-    <UserExercises username={'Gabriel Gamboa Vargas'} ></UserExercises>
+    <UserExercises username={'usuario1'} ></UserExercises>
   );
 }
 

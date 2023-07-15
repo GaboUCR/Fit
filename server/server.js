@@ -29,6 +29,7 @@ function authenticateToken(req, res, next) {
 router.get('/user/:username', async (req, res, next) => {
   try {
     const exercises = await getExercisesForUser(req.params.username);
+    console.log(exercises);
     res.status(200).send(exercises);
   } catch (error) {
     next(error);
@@ -64,7 +65,6 @@ router.post('/login', async (req, res, next) => {
     next(error); // se asegura de que los errores se manejen adecuadamente
   }
 });
-
 
 app.use('/', router);
 
