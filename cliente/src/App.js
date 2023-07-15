@@ -7,7 +7,7 @@ import { AuthProvider, AuthContext } from './AuthProvider';
 import { useContext } from 'react';
 
 function App() {
-  const { isAuthenticated, username } = useContext(AuthContext);
+  const { isAuthenticated } = useContext(AuthContext);
 
   if (!isAuthenticated) {
     return <AuthForm />;
@@ -32,6 +32,6 @@ function AppWrapper() {
 }
 
 export default AppWrapper;
+
 //<Route path="/routine" element={ /* Colocar el componente de rutina aquí */ } />
 //<Route path="/user-routines" element={ /* Colocar el componente de rutinas de usuario aquí */ } />
-
