@@ -4,7 +4,7 @@ import { AuthContext } from './AuthProvider';
 
 const UserExercises = () => {
   const [exercises, setExercises] = useState({});
-  const [username] = useContext(AuthContext);
+  const {username} = useContext(AuthContext);
 
   useEffect(() => {
     fetch(`http://localhost:3001/user/${username}`)

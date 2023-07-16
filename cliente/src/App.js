@@ -31,7 +31,7 @@ function App() {
         },
       })
       .then(response => {
-        if (response.ok) {
+        if (response.ok) {         
           return response.json();
         } else {
           throw new Error('Authentication failed');
@@ -39,7 +39,7 @@ function App() {
       })
       .then(data => {
         setIsAuthenticated(true);
-        setUsername(data.username);
+        setUsername(data.username.username);
       })
       .catch(error => {
         console.error('Error:', error);
@@ -61,7 +61,7 @@ function App() {
       <Router>
         <NavbarComponent />
         <Routes>
-          <Route path="/account"/>
+          <Route path="/account" element={<UserExercises />}/>
         </Routes>
       </Router>
     );
