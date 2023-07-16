@@ -25,16 +25,24 @@ function authenticateToken(req, res, next) {
   });
 }
 
-router.post('/verify', authenticateToken, (req, res) => {
+//Este middleware se utiliza en la rutas que deben verificar el nombre de usuario y se llama después de authenticateToken
+function verifyUsername(req, res, next) {
 
-  console.log("verificado");
+  if (req.user != req.body.username) {
+    res.status(401).send();
+  } else {
+    next();
+  }
+}
+
+router.post('/verify', authenticateToken, verifyUsername, (req, res) => {
+
   res.status(200).send({username: req.user, authenticated:true});
 });
 
-router.get('/user/:username', async (req, res, next) => {
+router.post('/user', async (req, res, next) => {
   try {
-    const exercises = await getExercisesForUser(req.params.username);
-    console.log(exercises);
+    const exercises = await getExercisesForUser(req.body.username);
     res.status(200).send(exercises);
   } catch (error) {
     next(error);

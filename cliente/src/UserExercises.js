@@ -7,7 +7,16 @@ const UserExercises = () => {
   const {username} = useContext(AuthContext);
 
   useEffect(() => {
-    fetch(`http://localhost:3001/user/${username}`)
+    const token = localStorage.getItem('token'); // Obtén el token desde localStorage
+
+    fetch('http://localhost:3001/user', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // Adjunta el token al header
+      },
+      body: JSON.stringify({username: username}) // Envia el username en el cuerpo de la petición
+    })
       .then((res) => res.json())
       .then((data) => {
         const exercisesByDate = data.reduce((obj, exercise) => {
