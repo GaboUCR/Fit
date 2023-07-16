@@ -6,7 +6,6 @@ const sqlite3 = require('sqlite3').verbose();
 const {registerUser, findUser, authenticateUser} = require('./db/auth');
 const {getExercisesForUser} = require('./db/user');
 const router = express.Router();
-const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const SECRET_KEY = "your-256-bit-secret"; 
 
@@ -17,14 +16,20 @@ function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
-  if (token == null) return res.sendStatus(401); // si no hay token, retorna un error 401
+  if (token == null) return res.status(401).send({authenticated:false}); // si no hay token, retorna un error 401
 
   jwt.verify(token, SECRET_KEY, (err, user) => {
-    if (err) return res.sendStatus(403); // si el token es inválido, retorna un error 403
+    if (err) return res.status(403).send({authenticated:false}); // si el token es inválido, retorna un error 403
     req.user = user;
     next();
   });
 }
+
+router.post('/verify', authenticateToken, (req, res) => {
+
+  console.log("verificado");
+  res.status(200).send({username: req.user, authenticated:true});
+});
 
 router.get('/user/:username', async (req, res, next) => {
   try {
@@ -43,8 +48,9 @@ router.post('/signup', async (req, res, next) => {
       res.status(409).send('Username already exists!');
     } else {
       await registerUser(req.body.username, req.body.password);
-      res.cookie('username', req.body.username, { maxAge: 900000, httpOnly: true });
-      res.status(200).send({username:req.body.username});
+      // Genera un token con la información del usuario
+      const token = jwt.sign({ username: req.body.username }, SECRET_KEY, { expiresIn: '1h' }); // El token expira en 1 hora
+      res.status(200).send({username:req.body.username, token: token});
     }
   } catch (error) {
     next(error);

@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Container, ListGroup, Card } from 'react-bootstrap';
+import { AuthContext } from './AuthProvider';
 
-const UserExercises = ({ username }) => {
+const UserExercises = () => {
   const [exercises, setExercises] = useState({});
+  const [username] = useContext(AuthContext);
 
   useEffect(() => {
     fetch(`http://localhost:3001/user/${username}`)
