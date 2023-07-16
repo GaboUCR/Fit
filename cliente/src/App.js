@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { AuthProvider, AuthContext } from './AuthProvider';
 import { useContext } from 'react';
 import { useEffect, useState } from 'react';
+import Routines from './Routines';
 
 const LoadingComponent = () => {
   return (
@@ -62,6 +63,7 @@ function App() {
         <NavbarComponent />
         <Routes>
           <Route path="/account" element={<UserExercises />}/>
+          <Route path="/user-routines" element={<Routines />}/>
         </Routes>
       </Router>
     );
@@ -78,6 +80,3 @@ function AppWrapper() {
 }
 
 export default AppWrapper;
-
-//<Route path="/routine" element={ /* Colocar el componente de rutina aquí */ } />
-//<Route path="/user-routines" element={ /* Colocar el componente de rutinas de usuario aquí */ } />

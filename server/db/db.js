@@ -18,7 +18,6 @@ function connectToDatabase() {
     db.run(`CREATE TABLE IF NOT EXISTS Routines (
               id INTEGER PRIMARY KEY,
               name TEXT NOT NULL,
-              exerciseAmount INTEGER NOT NULL,
               userId INTEGER,
               FOREIGN KEY(userId) REFERENCES Users(id)
             );`);
@@ -32,11 +31,18 @@ function connectToDatabase() {
               userId INTEGER,
               FOREIGN KEY(userId) REFERENCES Users(id)
             );`);
+
+    db.run(`CREATE TABLE IF NOT EXISTS RoutineExercises (
+              id INTEGER PRIMARY KEY,
+              routineId INTEGER,
+              exerciseId INTEGER,
+              FOREIGN KEY(routineId) REFERENCES Routines(id),
+              FOREIGN KEY(exerciseId) REFERENCES Exercises(id)
+            );`);
   });
 
   return db;
 }
-
 
 
 module.exports = connectToDatabase;

@@ -18,16 +18,41 @@ function getRoutinesForUser(username) {
   const db = connectToDatabase();
 
   return new Promise((resolve, reject) => {
-    db.all(`SELECT * FROM Routines JOIN Users ON Routines.userId = Users.id WHERE Users.username = ?`, [username], (err, rows) => {
+    db.all(`
+      SELECT Routines.name as routineName, Exercises.name as exerciseName, Exercises.amount, Exercises.unit, Exercises.date
+      FROM Users
+      INNER JOIN Routines ON Users.id = Routines.userId
+      INNER JOIN RoutineExercises ON Routines.id = RoutineExercises.routineId
+      INNER JOIN Exercises ON RoutineExercises.exerciseId = Exercises.id
+      WHERE Users.username = ?
+    `, [username], (err, rows) => {
       if (err) {
         reject(err);
+        return;
       }
-      resolve(rows);
+
+      // Transform the flat rows data into a nested structure
+      const routines = rows.reduce((result, row) => {
+        if (!result[row.routineName]) {
+          result[row.routineName] = [];
+        }
+
+        result[row.routineName].push({
+          name: row.exerciseName,
+          amount: row.amount,
+          unit: row.unit,
+          date: row.date
+        });
+
+        return result;
+      }, {});
+
+      resolve(routines);
     });
+
     db.close();
   });
 }
-
 
 module.exports = {
     getExercisesForUser, getRoutinesForUser
