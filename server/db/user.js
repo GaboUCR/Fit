@@ -14,6 +14,21 @@ async function getExercisesForUser(username) {
     });
 }
 
+function getRoutinesForUser(username) {
+  const db = connectToDatabase();
+
+  return new Promise((resolve, reject) => {
+    db.all(`SELECT * FROM Routines JOIN Users ON Routines.userId = Users.id WHERE Users.username = ?`, [username], (err, rows) => {
+      if (err) {
+        reject(err);
+      }
+      resolve(rows);
+    });
+    db.close();
+  });
+}
+
+
 module.exports = {
-    getExercisesForUser
+    getExercisesForUser, getRoutinesForUser
   };

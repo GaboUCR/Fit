@@ -4,7 +4,7 @@ const cors = require('cors');
 const app = express();
 const sqlite3 = require('sqlite3').verbose();
 const {registerUser, findUser, authenticateUser} = require('./db/auth');
-const {getExercisesForUser} = require('./db/user');
+const {getExercisesForUser, getRoutinesForUser} = require('./db/user');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const SECRET_KEY = "your-256-bit-secret"; 
@@ -27,7 +27,6 @@ function authenticateToken(req, res, next) {
 
 //Este middleware se utiliza en la rutas que deben verificar el nombre de usuario y se llama después de authenticateToken
 function verifyUsername(req, res, next) {
-
   if (req.user != req.body.username) {
     res.status(401).send();
   } else {
@@ -36,8 +35,17 @@ function verifyUsername(req, res, next) {
 }
 
 router.post('/verify', authenticateToken, verifyUsername, (req, res) => {
-
   res.status(200).send({username: req.user, authenticated:true});
+});
+
+router.post('/user-routines', authenticateToken, verifyUsername, (req, res, next) => {
+  getRoutinesForUser(req.body.username)
+    .then(routines => {
+      res.status(200).send(routines);
+    })
+    .catch(error => {
+      next(error);
+    });
 });
 
 router.post('/user', async (req, res, next) => {
