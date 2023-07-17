@@ -5,7 +5,7 @@ function connectToDatabase() {
     if (err) {
       console.error(err.message);
     }
-    console.log('Connected to the exercise database.');
+    
   });
 
   db.serialize(() => {
@@ -27,11 +27,19 @@ function connectToDatabase() {
               name TEXT NOT NULL UNIQUE
             );`);
 
+    db.run(`CREATE TABLE IF NOT EXISTS ExerciseRecord (
+              id INTEGER PRIMARY KEY,
+              date TEXT NOT NULL,
+              exerciseInstanceId INTEGER,
+              UserId INTEGER,
+              FOREIGN KEY(exerciseInstanceId) REFERENCES ExerciseInstances(id),
+              FOREIGN KEY(UserId) REFERENCES Users(id)
+            );`);
+
     db.run(`CREATE TABLE IF NOT EXISTS ExerciseInstances (
               id INTEGER PRIMARY KEY,
               amount INTEGER NOT NULL,
               unit TEXT,          
-              date TEXT NOT NULL,
               exerciseTypeId INTEGER,
               routineId INTEGER,
               FOREIGN KEY(exerciseTypeId) REFERENCES ExerciseTypes(id),

@@ -4,10 +4,11 @@ const cors = require('cors');
 const app = express();
 const sqlite3 = require('sqlite3').verbose();
 const {registerUser, findUser, authenticateUser} = require('./db/auth');
-const {getExercisesForUser, getRoutinesForUser} = require('./db/user');
+const {getExercisesForUser, getRoutinesForUser, processRoutineData} = require('./db/user');
 const router = express.Router();
+const connectToDatabase = require("./db/db");
 const jwt = require('jsonwebtoken');
-const SECRET_KEY = "your-256-bit-secret1"; 
+const SECRET_KEY = "your-256-bit-secret111"; 
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -55,6 +56,25 @@ router.post('/user', authenticateToken, verifyUsername, async (req, res, next) =
   } catch (error) {
     next(error);
   }
+});
+
+router.post('/update-routine', authenticateToken, verifyUsername, async(req, res) => {
+  const { username, routineData } = req.body;
+  const db = connectToDatabase();
+
+  try {
+      await processRoutineData(db, username, routineData);
+      res.status(200).send({});
+  } catch (err) {
+      console.error(err);
+      if (err.message === 'Ejercicio mal formateado') {
+          res.status(400).send('Datos de rutina mal formateados');
+      } else {
+          res.status(500).send('Error del servidor');
+      }
+  }
+
+  db.close();
 });
 
 router.post('/signup', async (req, res, next) => {

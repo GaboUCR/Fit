@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Container, ListGroup, Button, Form, Card, Row, Col } from "react-bootstrap";
+import { Container, ListGroup, Button, Card, Row, Col, Modal, Form } from "react-bootstrap";
 import { AuthContext } from './AuthProvider';
 import { useContext } from "react";
 
 const Routines = () => {
   const { username } = useContext(AuthContext);
   const [routines, setRoutines] = useState([]);
-  const [newExerciseName, setNewExerciseName] = useState("");
-  const [selectedRoutine, setSelectedRoutine] = useState(null);
+  const [routineData, setRoutineData] = useState("");
+  const [showModal, setShowModal] = useState(false);
   const token = localStorage.getItem('token');
-  
+
   useEffect(() => {
 
     fetch("http://localhost:3001/user-routines", {
@@ -28,29 +28,27 @@ const Routines = () => {
       .catch((error) => console.error("Error:", error));
   }, [username]);
 
-  const handleAddExercise = () => {
-    if (!selectedRoutine) {
-      alert("Seleccione una rutina primero");
+  const handleClose = () => setShowModal(false);
+  const handleShow = () => setShowModal(true);
+
+  const handleSaveRoutine = () => {
+    if (routineData === "") {
+      alert("El formulario está vacío. Por favor ingresa la información de la rutina.");
       return;
     }
 
-    fetch(`http://localhost:3001/routine/${selectedRoutine.name}/exercise`, {
+    fetch(`http://localhost:3001/update-routine`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         'Authorization': `Bearer ${token}`,
       },
-      body: JSON.stringify({ name: newExerciseName }),
+      body: JSON.stringify({ username, routineData }),
     })
       .then((res) => res.json())
       .then((data) => {
-        const updatedRoutines = routines.map((routine) =>
-          routine.name === selectedRoutine.name
-            ? { ...routine, exercises: [...routine.exercises, data] }
-            : routine
-        );
-        setRoutines(updatedRoutines);
-        setNewExerciseName("");
+        console.log(data); // Aquí puedes manejar la respuesta del servidor
+        handleClose();
       })
       .catch((error) => console.error("Error:", error));
   };
@@ -62,14 +60,14 @@ const Routines = () => {
         {routines.map((routine, i) => (
           <Col md={6} lg={4} key={i}>
             <Card className="my-3">
-              <Card.Header as="h5" onClick={() => setSelectedRoutine(routine)}>
+              <Card.Header as="h5">
                 {routine.name}
               </Card.Header>
               <Card.Body>
                 <ListGroup variant="flush">
                   {routine.exercises.map((exercise, j) => (
                     <ListGroup.Item key={j}>
-                      <strong>{exercise.name}</strong>
+                      <strong>{exercise.name}</strong> - {exercise.amount} {exercise.unit}
                     </ListGroup.Item>
                   ))}
                 </ListGroup>
@@ -78,21 +76,38 @@ const Routines = () => {
           </Col>
         ))}
       </Row>
-      <Form>
-        <Form.Group>
+      <Button variant="primary" onClick={handleShow}>
+        Añadir o modificar rutina
+      </Button>
+      <Modal show={showModal} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Añadir o modificar rutina</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>Por favor, escribe los datos de la rutina en el siguiente formato:</p>
+          <p>NombreRutina<br />
+          nombreEjercicio - cantidad unidades<br />
+          nombreEjercicio - cantidad unidades<br />
+          nombreEjercicio - cantidad unidades</p>
           <Form.Control
-            type="text"
-            placeholder="Nombre del nuevo ejercicio"
-            value={newExerciseName}
-            onChange={(e) => setNewExerciseName(e.target.value)}
+            as="textarea"
+            rows={6}
+            value={routineData}
+            onChange={(e) => setRoutineData(e.target.value)}
           />
-          <Button className="mt-3" variant="primary" onClick={handleAddExercise}>
-            Añadir ejercicio
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Cerrar
           </Button>
-        </Form.Group>
-      </Form>
+          <Button variant="primary" onClick={handleSaveRoutine}>
+            Guardar cambios
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 };
 
 export default Routines;
+
