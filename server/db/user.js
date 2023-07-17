@@ -27,7 +27,6 @@ async function getExercisesForUser(username) {
   });
 }
 
-
 function getRoutinesForUser(username) {
   const db = connectToDatabase();
 
@@ -77,8 +76,6 @@ const processRoutineData = async (db, username, routineData) => {
       if (!unit) throw new Error('Ejercicio mal formateado');
       return { name, amount: parseInt(amount, 10), unit };
   });
-
-  console.log("exerciseData:", exercisesData);
 
   // Get the user's id
   db.get("SELECT id FROM Users WHERE username = ?", [username], (err, row) => {
