@@ -35,13 +35,12 @@ function verifyUsername(req, res, next) {
 }
 
 router.post('/verify', authenticateToken, (req, res) => {
-  res.status(200).send({username: req.user, authenticated:true});
+  res.status(200).send({username: req.jwt.user.username, authenticated:true});
 });
 
 router.post('/user-routines', authenticateToken, verifyUsername, (req, res, next) => {
   getRoutinesForUser(req.body.username)
     .then(routines => {
-      console.log(routines)
       res.status(200).send(routines);
     })
     .catch(error => {
