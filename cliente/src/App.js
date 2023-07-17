@@ -40,7 +40,7 @@ function App() {
       })
       .then(data => {
         setIsAuthenticated(true);
-        setUsername(data.username.username);
+        setUsername(data.username);
       })
       .catch(error => {
         console.error('Error:', error);
