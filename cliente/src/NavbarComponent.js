@@ -14,7 +14,7 @@ const NavbarComponent = () => {
           height="30"
           className="d-inline-block align-top"
         />{' '}
-        FIT 
+        Workout 
       </Navbar.Brand>
 
       <Navbar.Toggle aria-controls="basic-navbar-nav" />

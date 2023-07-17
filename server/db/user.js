@@ -1,17 +1,23 @@
 const connectToDatabase = require("./db");
 
 async function getExercisesForUser(username) {
-    const db = connectToDatabase();
-    return new Promise((resolve, reject) => {
-      db.all("SELECT * FROM Exercises WHERE userId = (SELECT id FROM Users WHERE username = ?)", [username], (err, rows) => {
-        db.close();
-        if (err) {
-          reject(err);
-        } else {
-          resolve(rows);
-        }
-      });
+  const db = connectToDatabase();
+  return new Promise((resolve, reject) => {
+    db.all(`SELECT ExerciseInstances.*, ExerciseTypes.name 
+            FROM ExerciseInstances 
+            INNER JOIN Routines ON Routines.id = ExerciseInstances.routineId
+            INNER JOIN Users ON Users.id = Routines.userId
+            INNER JOIN ExerciseTypes ON ExerciseTypes.id = ExerciseInstances.exerciseTypeId
+            WHERE Users.username = ?`,
+    [username], (err, rows) => {
+      db.close();
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+      }
     });
+  });
 }
 
 function getRoutinesForUser(username) {
@@ -19,11 +25,11 @@ function getRoutinesForUser(username) {
 
   return new Promise((resolve, reject) => {
     db.all(`
-      SELECT Routines.name as routineName, Exercises.name as exerciseName, Exercises.amount, Exercises.unit, Exercises.date
+      SELECT Routines.name as routineName, ExerciseTypes.name as exerciseName, ExerciseInstances.amount, ExerciseInstances.unit, ExerciseInstances.date
       FROM Users
       INNER JOIN Routines ON Users.id = Routines.userId
-      INNER JOIN RoutineExercises ON Routines.id = RoutineExercises.routineId
-      INNER JOIN Exercises ON RoutineExercises.exerciseId = Exercises.id
+      INNER JOIN ExerciseInstances ON Routines.id = ExerciseInstances.routineId
+      INNER JOIN ExerciseTypes ON ExerciseInstances.exerciseTypeId = ExerciseTypes.id
       WHERE Users.username = ?
     `, [username], (err, rows) => {
       if (err) {

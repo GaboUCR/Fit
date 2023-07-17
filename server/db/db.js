@@ -22,22 +22,20 @@ function connectToDatabase() {
               FOREIGN KEY(userId) REFERENCES Users(id)
             );`);
 
-    db.run(`CREATE TABLE IF NOT EXISTS Exercises (
+    db.run(`CREATE TABLE IF NOT EXISTS ExerciseTypes (
               id INTEGER PRIMARY KEY,
-              name TEXT NOT NULL,
+              name TEXT NOT NULL UNIQUE
+            );`);
+
+    db.run(`CREATE TABLE IF NOT EXISTS ExerciseInstances (
+              id INTEGER PRIMARY KEY,
               amount INTEGER NOT NULL,
               unit TEXT,          
               date TEXT NOT NULL,
-              userId INTEGER,
-              FOREIGN KEY(userId) REFERENCES Users(id)
-            );`);
-
-    db.run(`CREATE TABLE IF NOT EXISTS RoutineExercises (
-              id INTEGER PRIMARY KEY,
+              exerciseTypeId INTEGER,
               routineId INTEGER,
-              exerciseId INTEGER,
-              FOREIGN KEY(routineId) REFERENCES Routines(id),
-              FOREIGN KEY(exerciseId) REFERENCES Exercises(id)
+              FOREIGN KEY(exerciseTypeId) REFERENCES ExerciseTypes(id),
+              FOREIGN KEY(routineId) REFERENCES Routines(id)
             );`);
   });
 
