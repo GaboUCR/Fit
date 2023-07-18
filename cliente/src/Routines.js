@@ -50,7 +50,7 @@ const Routines = () => {
         "Content-Type": "application/json",
         'Authorization': `Bearer ${token}`,
       },
-      body: JSON.stringify({ username, routineData }),
+      body: JSON.stringify({ username, routineData}),
     })
       .then((res) => res.json())
       .then((data) => {
@@ -63,6 +63,9 @@ const Routines = () => {
   return (
     <Container className="mt-3">
       <h2 className="text-center">Mis Rutinas</h2>
+      <Button variant="primary" onClick={handleShow}>
+        Añadir o modificar rutina
+      </Button>
       <Row>
         {routines.map((routine, i) => (
           <Col md={6} lg={4} key={i}>
@@ -87,9 +90,6 @@ const Routines = () => {
           </Col>
         ))}
       </Row>
-      <Button variant="primary" onClick={handleShow}>
-        Añadir o modificar rutina
-      </Button>
       <Modal show={showModal} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Añadir o modificar rutina</Modal.Title>

@@ -128,6 +128,31 @@ const processRoutineData = async (db, username, routineData) => {
   });
 };
 
+const addWorkoutToDB = async (db, username, completedExercises, date) => {
+  // Obtén el userId del nombre de usuario
+  const userQuery = `SELECT id FROM Users WHERE username = ?`;
+
+  const userId = await new Promise((resolve, reject) => {
+    db.get(userQuery, [username], (err, row) => {
+      if (err) {
+        reject(err);
+      }
+      resolve(row.id);
+    });
+  });
+
+  // Itera sobre completedExercises e inserta cada uno en la tabla
+  for (let exercise of completedExercises) {
+    const insertQuery = `INSERT INTO ExerciseRecord(date, exerciseInstanceId, UserId) VALUES (?, ?, ?)`;
+    db.run(insertQuery, [date, exercise.instanceId, userId], function(err) {
+      if (err) {
+        return console.error(err.message);
+      }
+    });
+  }
+};
+
+
 module.exports = {
-    getExercisesForUser, getRoutinesForUser, processRoutineData
-  };
+    getExercisesForUser, getRoutinesForUser, processRoutineData, addWorkoutToDB
+  }

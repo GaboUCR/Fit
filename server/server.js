@@ -4,11 +4,11 @@ const cors = require('cors');
 const app = express();
 const sqlite3 = require('sqlite3').verbose();
 const {registerUser, findUser, authenticateUser} = require('./db/auth');
-const {getExercisesForUser, getRoutinesForUser, processRoutineData} = require('./db/user');
+const {getExercisesForUser, getRoutinesForUser, processRoutineData, addWorkoutToDB} = require('./db/user');
 const router = express.Router();
 const connectToDatabase = require("./db/db");
 const jwt = require('jsonwebtoken');
-const SECRET_KEY = "your-256-bit-secret111"; 
+const SECRET_KEY = "your-256-bit-secret11111"; 
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -39,6 +39,22 @@ router.post('/verify', authenticateToken, (req, res) => {
   res.status(200).send({username: req.jwt.user.username, authenticated:true});
 });
 
+router.post('/add-workout', authenticateToken, verifyUsername, (req, res, next) => {
+  const {username, completedExercises, date} = req.body;
+  const db = connectToDatabase();
+
+  addWorkoutToDB(db, username, completedExercises, date)
+    .then(() => {
+      res.status(200).send({});
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send({error: 'An error occurred when saving the workout.'});
+      db.close();
+    });
+  
+});
+
 router.post('/user-routines', authenticateToken, verifyUsername, (req, res, next) => {
   getRoutinesForUser(req.body.username)
     .then(routines => {
@@ -52,6 +68,7 @@ router.post('/user-routines', authenticateToken, verifyUsername, (req, res, next
 router.post('/user', authenticateToken, verifyUsername, async (req, res, next) => {
   try {
     const exercises = await getExercisesForUser(req.body.username);
+
     res.status(200).send(exercises);
   } catch (error) {
     next(error);
