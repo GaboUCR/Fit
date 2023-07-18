@@ -32,7 +32,7 @@ function getRoutinesForUser(username) {
 
   return new Promise((resolve, reject) => {
     db.all(`
-      SELECT Routines.name as routineName, ExerciseTypes.name as exerciseName, ExerciseInstances.amount, ExerciseInstances.unit
+      SELECT Routines.name as routineName, ExerciseTypes.name as exerciseName, ExerciseInstances.amount, ExerciseInstances.unit, ExerciseInstances.id as instanceId
       FROM Users
       INNER JOIN Routines ON Users.id = Routines.userId
       INNER JOIN ExerciseInstances ON Routines.id = ExerciseInstances.routineId
@@ -53,7 +53,8 @@ function getRoutinesForUser(username) {
         result[row.routineName].push({
           name: row.exerciseName,
           amount: row.amount,
-          unit: row.unit
+          unit: row.unit,
+          instanceId: row.instanceId
         });
 
         return result;

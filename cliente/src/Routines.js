@@ -34,7 +34,7 @@ const Routines = () => {
   const addToWorkout = (exercises) => {
     setActiveExercises(prevExercises => ({
       ...prevExercises,
-      ...Object.fromEntries(exercises.map(exercise => [exercise.name, false]))
+      ...Object.fromEntries(exercises.map(exercise => [exercise.name, { ...exercise, isComplete: false }]))
     }));
   };
   
