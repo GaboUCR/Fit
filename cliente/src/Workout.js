@@ -21,16 +21,14 @@ const Workout = () => {
     }
   }, []);
   
-
   useEffect(() => {
-    if (Object.keys(activeExercises).length > 0) {
-      console.log('useEffect:activeExercises:', activeExercises);
+
       try {
         localStorage.setItem('activeExercises', JSON.stringify(activeExercises));
       } catch (error) {
         console.error("Error saving exercises to localStorage:", error);
       }
-    }
+    
   }, [activeExercises]);
   
 
