@@ -1,6 +1,7 @@
 import './App.css';
 import AuthForm from './AuthForm';
 import UserExercises from './UserExercises';
+import Workout from './Workout';
 import NavbarComponent from './NavbarComponent';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { AuthProvider, AuthContext } from './AuthProvider';
@@ -64,6 +65,7 @@ function App() {
         <Routes>
           <Route path="/account" element={<UserExercises />}/>
           <Route path="/user-routines" element={<Routines />}/>
+          <Route path="/workout" element={<Workout />} />
         </Routes>
       </Router>
     );

@@ -6,7 +6,7 @@ const NavbarComponent = () => {
   return (
     <Navbar bg="dark" variant="dark" expand="lg">
       {/* El logo de la app que lleva al componente de rutina */}
-      <Navbar.Brand as={Link} to="/routine">
+      <Navbar.Brand as={Link} to="/workout">
         <img
           alt=""
           src="/logo.png" // Cambia esto por la ruta a tu imagen de logo

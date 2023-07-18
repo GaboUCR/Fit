@@ -4,7 +4,7 @@ import { AuthContext } from './AuthProvider';
 import { useContext } from "react";
 
 const Routines = () => {
-  const { username } = useContext(AuthContext);
+  const { username, activeExercises, setActiveExercises } = useContext(AuthContext);
   const [routines, setRoutines] = useState([]);
   const [routineData, setRoutineData] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -31,6 +31,13 @@ const Routines = () => {
   const handleClose = () => setShowModal(false);
   const handleShow = () => setShowModal(true);
 
+  const addToWorkout = (exercises) => {
+    setActiveExercises(prevExercises => ({
+      ...prevExercises,
+      ...Object.fromEntries(exercises.map(exercise => [exercise.name, false]))
+    }));
+  };
+  
   const handleSaveRoutine = () => {
     if (routineData === "") {
       alert("El formulario está vacío. Por favor ingresa la información de la rutina.");
@@ -70,7 +77,11 @@ const Routines = () => {
                       <strong>{exercise.name}</strong> - {exercise.amount} {exercise.unit}
                     </ListGroup.Item>
                   ))}
-                </ListGroup>
+                </ListGroup> {/* Aquí debes cerrar el ListGroup */}
+                {/* Añade aquí el botón addToWorkout */}
+                <Button variant="secondary" className="mt-2" onClick={() => addToWorkout(routine.exercises)}>
+                  Agregar a mi entrenamiento
+                </Button>
               </Card.Body>
             </Card>
           </Col>
