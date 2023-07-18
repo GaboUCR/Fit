@@ -36,7 +36,13 @@ function verifyUsername(req, res, next) {
 }
 
 router.post('/verify', authenticateToken, (req, res) => {
-  res.status(200).send({username: req.jwt.user.username, authenticated:true});
+
+  try {
+    res.status(200).send({username: req.jwt.user.username, authenticated:true});
+  }
+  catch (err) {
+    next(err);
+  }
 });
 
 router.post('/add-workout', authenticateToken, verifyUsername, (req, res, next) => {
@@ -51,6 +57,7 @@ router.post('/add-workout', authenticateToken, verifyUsername, (req, res, next) 
       console.error(err);
       res.status(500).send({error: 'An error occurred when saving the workout.'});
       db.close();
+      next(err);
     });
   
 });
@@ -89,6 +96,7 @@ router.post('/update-routine', authenticateToken, verifyUsername, async(req, res
       } else {
           res.status(500).send('Error del servidor');
       }
+      next(err);
   }
 
   db.close();
@@ -126,6 +134,16 @@ router.post('/login', async (req, res, next) => {
 });
 
 app.use('/', router);
+
+app.use((err, req, res, next) => {
+  console.error(err.stack); // imprime la traza del error en la consola
+
+  // puedes personalizar el mensaje de error según el status del error
+  const message = err.status === 404 ? 'Página no encontrada' : 'Ha ocurrido un error en el servidor';
+
+  // envía la respuesta con el status del error y el mensaje
+  res.status(err.status || 500).send({ error: message });
+});
 
 app.listen(3001, () => {
   console.log('Server is running on port 3001');
