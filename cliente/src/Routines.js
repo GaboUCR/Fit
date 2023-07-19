@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Container, ListGroup, Button, Card, Row, Col, Modal, Form } from "react-bootstrap";
 import { AuthContext } from './AuthProvider';
 import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Routines = () => {
   const { username, activeExercises, setActiveExercises } = useContext(AuthContext);
@@ -9,6 +10,7 @@ const Routines = () => {
   const [routineData, setRoutineData] = useState("");
   const [showModal, setShowModal] = useState(false);
   const token = localStorage.getItem('token');
+  const navigate = useNavigate();  
 
   useEffect(() => {
 
@@ -38,6 +40,7 @@ const Routines = () => {
         isComplete: false
       }))
     );
+    navigate("/workout");
   };
   
   const handleSaveRoutine = () => {
