@@ -110,7 +110,7 @@ router.post('/signup', async (req, res, next) => {
     } else {
       await registerUser(req.body.username, req.body.password);
       // Genera un token con la información del usuario
-      const token = jwt.sign({ username: req.body.username }, SECRET_KEY, { expiresIn: '1h' }); // El token expira en 1 hora
+      const token = jwt.sign({ username: req.body.username }, SECRET_KEY, { expiresIn: '23h' }); // El token expira en 1 hora
       res.status(200).send({username:req.body.username, token: token});
     }
   } catch (error) {
@@ -123,7 +123,7 @@ router.post('/login', async (req, res, next) => {
     const user = await authenticateUser(req.body.username, req.body.password);
     if (user.status === 200) {
       // Genera un token con la información del usuario
-      const token = jwt.sign({ username: user.usermsg.username }, SECRET_KEY, { expiresIn: '1h' }); // El token expira en 1 hora
+      const token = jwt.sign({ username: user.usermsg.username }, SECRET_KEY, { expiresIn: '23h' }); // El token expira en 1 hora
       res.status(user.status).send({username:user.usermsg.username, token: token});
     } else {
       res.status(user.status).send({username:user.usermsg.username});
