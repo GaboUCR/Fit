@@ -32,10 +32,12 @@ const Routines = () => {
   const handleShow = () => setShowModal(true);
 
   const addToWorkout = (exercises) => {
-    setActiveExercises(prevExercises => ({
-      ...prevExercises,
-      ...Object.fromEntries(exercises.map(exercise => [exercise.name, { ...exercise, isComplete: false }]))
-    }));
+    setActiveExercises(
+      exercises.map((exercise) => ({
+        ...exercise,
+        isComplete: false
+      }))
+    );
   };
   
   const handleSaveRoutine = () => {

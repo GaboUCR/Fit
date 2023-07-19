@@ -5,20 +5,6 @@ import { AuthContext } from './AuthProvider';
 const Workout = () => {
   const {username, activeExercises, setActiveExercises } = useContext(AuthContext);
   const token = localStorage.getItem('token');
-
-  useEffect(() => {
-    try {
-      const storedExercises = localStorage.getItem('activeExercises');
-      if (storedExercises) {
-        const parsedExercises = JSON.parse(storedExercises);
-        if (parsedExercises && typeof parsedExercises === 'object') {
-          setActiveExercises(parsedExercises);
-        }
-      }
-    } catch (error) {
-      console.error("Error loading exercises from localStorage:", error);
-    }
-  }, []);
   
   useEffect(() => {
     try {
@@ -26,29 +12,22 @@ const Workout = () => {
     } catch (error) {
       console.error("Error saving exercises to localStorage:", error);
     }
-    
   }, [activeExercises]);
   
-
-  const handleCheck = (exerciseName, instanceId) => {
-    const updatedExercises = {
-      ...activeExercises,
-      [exerciseName]: {
-        ...activeExercises[exerciseName],
-        isComplete: !activeExercises[exerciseName].isComplete,
-        instanceId: instanceId
+  const handleCheck = (index) => {
+    const updatedExercises = activeExercises.map((exercise, i) => {
+      if (i === index) {
+        return { ...exercise, isComplete: !exercise.isComplete };
       }
-    };
-    console.log('handleCheck:', updatedExercises);
+      return exercise;
+    });
     setActiveExercises(updatedExercises);
     localStorage.setItem('activeExercises', JSON.stringify(updatedExercises));
   };
 
   const handleFinishWorkout = () => {
-    const completedExercises = Object.entries(activeExercises)
-      .filter(([name, { isComplete }]) => isComplete)
-      .map(([name, { instanceId }]) => ({ name, instanceId }));
-
+    const completedExercises = activeExercises.filter(exercise => exercise.isComplete);
+    
     var fechaActual = new Date().toLocaleDateString();
     
     fetch('http://localhost:3001/add-workout', {
@@ -62,22 +41,22 @@ const Workout = () => {
       .then(data => console.log(data))
       .catch(error => console.error('Error:', error));
 
-    setActiveExercises({});
+    setActiveExercises([]);
   };
 
   return (
     <Container>
       <h2>Mi entrenamiento</h2>
       <ListGroup>
-        {Object.entries(activeExercises).map(([exerciseName, { amount, unit, isComplete, instanceId }]) => (
-          <ListGroup.Item key={exerciseName}>
+        {activeExercises.map(({ name, amount, unit, isComplete }, index) => (
+          <ListGroup.Item key={index}>
             <input
               type="checkbox"
               checked={isComplete}
-              onChange={() => handleCheck(exerciseName, instanceId)}
+              onChange={() => handleCheck(index)}
             />
             {' '}
-            {exerciseName} - {amount} {unit}
+            {name} - {amount} {unit}
           </ListGroup.Item>
         ))}
       </ListGroup>
