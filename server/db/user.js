@@ -67,6 +67,22 @@ function getRoutinesForUser(username) {
   });
 }
 
+const run = (db, sql, params) =>
+  new Promise((resolve, reject) =>
+    db.run(sql, params, function(err) {
+      if (err) reject(err);
+      else resolve(this.lastID);
+    })
+  );
+
+const get = (db, sql, params) =>
+  new Promise((resolve, reject) =>
+    db.get(sql, params, (err, row) => {
+      if (err) reject(err);
+      else resolve(row);
+    })
+  );
+
 const processRoutineData = async (db, username, routineData) => {
   const dataLines = routineData.split('\n');
   const routineName = dataLines[0];
@@ -78,54 +94,21 @@ const processRoutineData = async (db, username, routineData) => {
       return { name, amount: parseInt(amount, 10), unit };
   });
 
-  // Get the user's id
-  db.get("SELECT id FROM Users WHERE username = ?", [username], (err, row) => {
-    if (err) throw err;
-    if (!row) throw new Error('User not found');
-    const userId = row.id;
+  const userRow = await get(db, "SELECT id FROM Users WHERE username = ?", [username]);
+  if (!userRow) throw new Error('User not found');
+  const userId = userRow.id;
 
-    let routineId;
+  let routineRow = await get(db, "SELECT id FROM Routines WHERE name = ? AND userId = ?", [routineName, userId]);
+  let routineId = routineRow ? routineRow.id : await run(db, "INSERT INTO Routines (name, userId) VALUES (?, ?)", [routineName, userId]);
 
-    // Check if the routine exists
-    db.get("SELECT id FROM Routines WHERE name = ? AND userId = ?", [routineName, userId], (err, row) => {
-      if (err) throw err;
-      
-      if (row) {
-          routineId = row.id;
-      } else {
-          // If not, create a new one
-          db.run("INSERT INTO Routines (name, userId) VALUES (?, ?)", [routineName, userId], function(err) {
-              if (err) throw err;
-              routineId = this.lastID;
-          });
-      }
+  for (const exerciseData of exercisesData) {
+    let exerciseTypeRow = await get(db, "SELECT id FROM ExerciseTypes WHERE name = ?", [exerciseData.name]);
+    let exerciseTypeId = exerciseTypeRow ? exerciseTypeRow.id : await run(db, "INSERT INTO ExerciseTypes (name) VALUES (?)", [exerciseData.name]);
 
-      // Add the exercises
-      for (const exerciseData of exercisesData) {
-          let exerciseTypeId;
-          db.get("SELECT id FROM ExerciseTypes WHERE name = ?", [exerciseData.name], (err, row) => {
-              if (err) throw err;
-              if (row) {
-                  exerciseTypeId = row.id;
-              } else {
-                  // If the exercise type doesn't exist, create a new one
-                  db.run("INSERT INTO ExerciseTypes (name) VALUES (?)", [exerciseData.name], function(err) {
-                      if (err) throw err;
-                      exerciseTypeId = this.lastID;
-                  });
-              }
-
-              // Insert the exercise instance
-              db.run("INSERT INTO ExerciseInstances (amount, unit, exerciseTypeId, routineId) VALUES (?, ?, ?, ?)", 
-                  [exerciseData.amount, exerciseData.unit, exerciseTypeId, routineId], 
-                  err => {
-                      if (err) throw err;
-                  }
-              );
-          });
-      }
-    });
-  });
+    await run(db, "INSERT INTO ExerciseInstances (amount, unit, exerciseTypeId, routineId) VALUES (?, ?, ?, ?)", 
+      [exerciseData.amount, exerciseData.unit, exerciseTypeId, routineId]
+    );
+  }
 };
 
 const addWorkoutToDB = async (db, username, completedExercises, date) => {

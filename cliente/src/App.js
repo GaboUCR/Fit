@@ -3,7 +3,7 @@ import AuthForm from './AuthForm';
 import UserExercises from './UserExercises';
 import Workout from './Workout';
 import NavbarComponent from './NavbarComponent';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { AuthProvider, AuthContext } from './AuthProvider';
 import { useContext } from 'react';
 import { useEffect, useState } from 'react';
@@ -66,6 +66,7 @@ function App() {
           <Route path="/account" element={<UserExercises />}/>
           <Route path="/user-routines" element={<Routines />}/>
           <Route path="/workout" element={<Workout />} />
+          <Route path="*" element={<Navigate to="/workout" />} />
         </Routes>
       </Router>
     );

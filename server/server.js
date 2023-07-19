@@ -8,7 +8,7 @@ const {getExercisesForUser, getRoutinesForUser, processRoutineData, addWorkoutTo
 const router = express.Router();
 const connectToDatabase = require("./db/db");
 const jwt = require('jsonwebtoken');
-const SECRET_KEY = "your-256-bit-secret11111"; 
+const SECRET_KEY = "your-256-bit-secret111111"; 
 
 app.use(cors());
 app.use(bodyParser.json());
