@@ -35,7 +35,7 @@ function verifyUsername(req, res, next) {
   }
 }
 
-router.post('/verify', authenticateToken, (req, res) => {
+router.post('/verify', authenticateToken, (req, res, next) => {
 
   try {
     res.status(200).send({username: req.jwt.user.username, authenticated:true});
@@ -82,7 +82,7 @@ router.post('/user', authenticateToken, verifyUsername, async (req, res, next) =
   }
 });
 
-router.post('/update-routine', authenticateToken, verifyUsername, async(req, res) => {
+router.post('/update-routine', authenticateToken, verifyUsername, async(req, res, next) => {
   const { username, routineData } = req.body;
   const db = connectToDatabase();
 
